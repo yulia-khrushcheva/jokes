@@ -10,42 +10,43 @@ _START_COMANDS = ["start", "s"]
 
 def get_log_level(env_key: str) -> int:
     str_level = os.environ.get(env_key)
-    if str_level in logging._nameToLevel.keys():
-        return logging._nameToLevel[str_level]
+    levels = logging.getLevelNamesMapping()
+    if str_level in levels.keys():
+        return levels[str_level]
     else:
-        return logging._nameToLevel["INFO"]
+        return levels["INFO"]
             
 def get_logger()-> logging.Logger:
-    logger = logging.getLogger(__name__)
-    logger.setLevel(get_log_level("LOGLEVEL"))
+    log = logging.getLogger(__name__)
+    log.setLevel(get_log_level("LOGLEVEL"))
     handler = logging.FileHandler(f"{__name__}.log")
     formatter = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
     handler.setFormatter(formatter)
-    logger.addHandler(handler)
+    log.addHandler(handler)
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-    return logger
+    log.addHandler(console_handler)
+    return log
 
 def get_bot()-> telebot.TeleBot:
     token = os.environ["TBOTTOKEN"]
     telebot.logger.setLevel(get_log_level("TBOT_LOGLEVEL"))
-    bot = telebot.TeleBot(token, use_class_middlewares=True)
-    return bot
+    new_bot = telebot.TeleBot(token, use_class_middlewares=True)
+    return new_bot
 
 def starter_functions():
-    logger.info(f'Number of modules found - {len(atom_functions_list)}')
+    logger.info("Number of modules found - %d", len(atom_functions_list))
     for funct in atom_functions_list:
         try:
             if(funct.state):
                 funct.set_handlers(bot)
-                logger.info(f'{funct} - start OK!')
+                logger.info("%s - start OK!", funct)
             else:
-                logger.info(f'{funct} - state FALSE!')
-        except Exception as e:
+                logger.info("%s - state FALSE!", funct)
+        except Exception as e: # pylint: disable=broad-except
             logger.error(e)
             funct.state = False
-            logger.warning(f'{funct} - start EXCEPTION!')
+            logger.warning("%s - start EXCEPTION!", funct)
 
     @bot.message_handler(commands=_START_COMANDS)
     def start_message(message):

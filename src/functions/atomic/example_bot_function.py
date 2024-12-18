@@ -1,3 +1,4 @@
+import logging
 from bot_func_abc import AtomicBotFunctionABC
 import telebot
 from telebot import types
@@ -13,6 +14,9 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
     Описание способов использования, логики работы. Примеры вызова функции - /ebf 
     Возможные параметры функции `/example`  """
     state: bool = True
+
+    bot: telebot.TeleBot
+    example_keyboard_factory: CallbackData
 
     def set_handlers(self, bot: telebot.TeleBot):
         self.bot = bot 
@@ -61,7 +65,6 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
                 force_reply = types.ForceReply(selective=False)
                 msg = self.bot.send_message(message.chat.id, f"text = {txt}; chat.id = {chat_id}; \n Для выхода из диалога введите - exit", reply_markup=force_reply)
                 self.bot.register_next_step_handler(msg, self.process_next_step)
-        except ValueError:
-            raise
-        except Exception as e:
+        except ValueError as e:
+            logging.exception(e)
             self.bot.reply_to(message, f"Exception - {e}")

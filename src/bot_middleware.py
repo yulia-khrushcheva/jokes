@@ -20,10 +20,11 @@ class Middleware(BaseMiddleware):
         self.bot = bot
         self.storage_worker = self.get_storage_worker()
 
-    def pre_process_message(self, message: telebot.types.Message, data):
+    def pre_process_message(self, message: telebot.types.Message, _unused):
+        
         self.logger.info(Middleware.create_text_from_message(message))
         
-    def post_process_message(self, message: telebot.types.Message, data, exception=None):
+    def post_process_message(self, message: telebot.types.Message, _unused, exception=None):
         self.save_message(message, None)
         if exception:
             self.logger.exception(exception)
@@ -32,18 +33,14 @@ class Middleware(BaseMiddleware):
     def create_text_from_message(message: telebot.types.Message)-> str:
         return f'| {message.chat.id} | {message.from_user.username} {message.from_user.full_name} --> {message.text}'
 
-    def pre_process_callback_query(self, call: telebot.types.CallbackQuery, data):
+    def pre_process_callback_query(self, call: telebot.types.CallbackQuery, _unused):
         self.logger.info(Middleware.create_text_from_callback_query(call))
     
-    def post_process_callback_query(self, call: telebot.types.CallbackQuery, data, exception=None):
+    def post_process_callback_query(self, call: telebot.types.CallbackQuery, _unused, exception=None):
         if exception:
             self.logger.exception(exception)
-        try:
-            self.save_message(call.message, f"{call.from_user.username} --> {call.data}")
-        except Exception as e :
-            self.logger.info("Не удалось сохранить в БД!")
-            self.logger.exception(e)
-
+        self.save_message(call.message, f"{call.from_user.username} --> {call.data}")
+        
     @staticmethod
     def create_text_from_callback_query(call: telebot.types.CallbackQuery)-> str:
         return f'| {call.message.chat.id} | {call.message.from_user.username} {call.message.from_user.full_name} --> {call.message.text} \
@@ -60,18 +57,23 @@ class Middleware(BaseMiddleware):
             return None
 
     def save_message(self, message: telebot.types.Message, data: str | None):
-        if self.storage_worker:
-            user = self.storage_worker.get_user(message.from_user.id)
-            if user is None:
-                user = self.new_user_from_tgmessage(message)
-                user = self.storage_worker.save_user(user)
-            chat = self.storage_worker.get_chat(message.chat.id)
-            if chat is None:
-                chat = self.new_chat_from_tgmessage(message)
-                chat = self.storage_worker.save_chat(chat)
-            message = self.new_message(user, chat, message.text, data)
-            self.storage_worker.save_message(message)
-
+        try:
+            if self.storage_worker:
+                user = self.storage_worker.get_user(message.from_user.id)
+                if user is None:
+                    user = self.new_user_from_tgmessage(message)
+                    user = self.storage_worker.save_user(user)
+                chat = self.storage_worker.get_chat(message.chat.id)
+                if chat is None:
+                    chat = self.new_chat_from_tgmessage(message)
+                    chat = self.storage_worker.save_chat(chat)
+                message = self.new_message(user, chat, message.text, data)
+                self.storage_worker.save_message(message)
+        except Exception as e : # pylint: disable=broad-except
+            self.logger.info("Failed to save to DB")
+            self.logger.exception(e)
+        
+        
     def new_user_from_tgmessage(self, message: telebot.types.Message)-> User:
         user = User()
         user.id = message.from_user.id

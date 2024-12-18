@@ -20,5 +20,6 @@ class LoadAtomic():
                     if inspect.isclass(cls) and cls.__base__ is AtomicBotFunctionABC:
                         obj: AtomicBotFunctionABC = cls() 
                         function_objects.append(obj)
+                        print(f"{name} - Added!")
 
         return function_objects
