@@ -2,11 +2,6 @@ from typing import List
 from abc import ABC, abstractmethod
 import telebot
 
-class BotFunctionABC(ABC):
-    @abstractmethod
-    def set_handlers(self, bot: telebot.TeleBot, commands: List[str]):
-        """Message handlers need to be set! """
-
 class AtomicBotFunctionABC(ABC):
     
     @property

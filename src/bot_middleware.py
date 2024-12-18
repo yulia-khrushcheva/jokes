@@ -52,9 +52,9 @@ class Middleware(BaseMiddleware):
             storage_worker = StorageWorker(conection_string)
             self.logger.info(f"Added storage_worker with CONECTION_PGDB = {conection_string}")
             return storage_worker
-        else:
-            self.logger.info("Not added storage_worker")
-            return None
+        
+        self.logger.info("Not added storage_worker")
+        return None
 
     def save_message(self, message: telebot.types.Message, data: str | None):
         try:
@@ -89,7 +89,10 @@ class Middleware(BaseMiddleware):
         chat = Chat()
         chat.id = message.chat.id
         chat.bio = message.chat.bio
-        chat.description = message.chat.description
+        if message.chat.description:
+            chat.description = message.chat.description
+        else:
+            chat.description = message.chat.type + " - " + message.chat.username
         return chat
 
     def new_message(self, user: User, chat: Chat, txt: str, data: str | None)-> Message:

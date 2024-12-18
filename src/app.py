@@ -2,9 +2,11 @@ import logging
 import sys
 import os
 import telebot
+from load_atomic import load_atomic_functions
 from bot_middleware import Middleware
 from bot_callback_filter import BotCallbackCustomFilter
-from load_atomic import LoadAtomic
+
+#from load_atomic import LoadAtomic
 
 _START_COMANDS = ["start", "s"]
 
@@ -13,8 +15,7 @@ def get_log_level(env_key: str) -> int:
     levels = logging.getLevelNamesMapping()
     if str_level in levels.keys():
         return levels[str_level]
-    else:
-        return levels["INFO"]
+    return levels["INFO"]
             
 def get_logger()-> logging.Logger:
     log = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ def starter_functions():
 
 logger = get_logger()
 bot = get_bot()
-atom_functions_list = LoadAtomic.load_functions()
+atom_functions_list = load_atomic_functions()
 
 if __name__ == '__main__':
     logger.critical('-= START =-')

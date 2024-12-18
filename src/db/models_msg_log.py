@@ -1,9 +1,12 @@
 from sqlalchemy import Boolean, Integer, String, Column, DateTime, ForeignKey, BigInteger
 from sqlalchemy.orm import relationship, DeclarativeBase
 from datetime import datetime
+import dataclasses
 
+@dataclasses.dataclass
 class Base(DeclarativeBase): pass
 
+@dataclasses.dataclass
 class User(Base):
     __tablename__ = 'users'
     id = Column(BigInteger, primary_key=True)
@@ -15,6 +18,7 @@ class User(Base):
     is_bot = Column(Boolean, nullable=False, default=False)
     messages = relationship("Message", back_populates="user")
 
+@dataclasses.dataclass
 class Chat(Base):
     __tablename__ = 'chats'
     id = Column(BigInteger, primary_key=True)
@@ -22,6 +26,7 @@ class Chat(Base):
     description = Column(String(1000), nullable=True)
     messages = relationship("Message", back_populates="chat")
 
+@dataclasses.dataclass
 class Message(Base):
     __tablename__ = 'messages'
     id = Column(Integer, primary_key=True)
