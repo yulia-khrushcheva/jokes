@@ -38,6 +38,6 @@ The code must be organized in a class that inherits from the abstract class **At
  - description: str - a detailed description of the function with a description of the parameters if they are needed
  - state: bool - state whether the function is enabled or disabled
 
-For an example, take a look at the file **[example_bot_function.py]()**
+For an example, take a look at the file **[example_bot_function.py](https://github.com/IHVH/system-integration-bot-2/blob/master/src/functions/atomic/example_bot_function.py)**
 
 Explore the capabilities of the library that is used in the project [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI).
