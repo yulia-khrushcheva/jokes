@@ -1,13 +1,18 @@
+"""The module contains classes inherited from
+sqlalchemy.orm DeclarativeBase for describing tables"""
+
+import dataclasses
+from datetime import datetime
 from sqlalchemy import Boolean, Integer, String, Column, DateTime, ForeignKey, BigInteger
 from sqlalchemy.orm import relationship, DeclarativeBase
-from datetime import datetime
-import dataclasses
 
 @dataclasses.dataclass
-class Base(DeclarativeBase): pass
+class Base(DeclarativeBase):
+    """Base class used for declarative class definitions"""
 
 @dataclasses.dataclass
 class User(Base):
+    """Definitions of the users table"""
     __tablename__ = 'users'
     id = Column(BigInteger, primary_key=True)
     username = Column(String(200), nullable=True)
@@ -20,6 +25,7 @@ class User(Base):
 
 @dataclasses.dataclass
 class Chat(Base):
+    """Definitions of the chats table"""
     __tablename__ = 'chats'
     id = Column(BigInteger, primary_key=True)
     bio = Column(String(500), nullable=True)
@@ -28,6 +34,7 @@ class Chat(Base):
 
 @dataclasses.dataclass
 class Message(Base):
+    """Definitions of the messages table"""
     __tablename__ = 'messages'
     id = Column(Integer, primary_key=True)
     user_id = Column(BigInteger, ForeignKey('users.id'))
