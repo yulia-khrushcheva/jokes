@@ -17,7 +17,7 @@ class StartApp():
     _TBOTTOKEN_ENV_KEY = "TBOTTOKEN"
 
     def __init__(self, start_comannds: List[str]):
-        self.logger = self.__get_logger()
+        self.logger = self.get_logger()
         self.bot = self.__get_bot()
         self.atom_functions_list = load_atomic_functions()
         self.__decorate_atomic_functions()
@@ -30,15 +30,7 @@ class StartApp():
         self.logger.critical('-= START =-')
         self.bot.infinity_polling()
 
-    def __get_log_level(self, env_key: str) -> int:
-        """Get log level from environment variables"""
-        str_level = os.environ.get(env_key)
-        levels = logging.getLevelNamesMapping()
-        if str_level in levels:
-            return levels[str_level]
-        return levels["INFO"]
-
-    def __get_logger(self)-> logging.Logger:
+    def get_logger(self)-> logging.Logger:
         """Get a configured logger"""
         log = logging.getLogger(__name__)
         log.setLevel(self.__get_log_level(self._LOGLEVEL_ENV_KEY))
@@ -50,6 +42,14 @@ class StartApp():
         console_handler.setFormatter(formatter)
         log.addHandler(console_handler)
         return log
+
+    def __get_log_level(self, env_key: str) -> int:
+        """Get log level from environment variables"""
+        str_level = os.environ.get(env_key)
+        levels = logging.getLevelNamesMapping()
+        if str_level in levels:
+            return levels[str_level]
+        return levels["INFO"]
 
     def __get_bot(self)-> telebot.TeleBot:
         """Get a configured bot"""
