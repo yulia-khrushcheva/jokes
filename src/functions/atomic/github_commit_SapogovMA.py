@@ -7,13 +7,13 @@ from telebot.callback_data import CallbackData
 from bot_func_abc import AtomicBotFunctionABC
 
 class CountryCodesBot(AtomicBotFunctionABC):
-    commands: List[str] = ["Countries", "ebf"]
+    commands: List[str] = ["Countries", "desc"]
     authors: List[str] = ["TestStudentMichael"]
-    about: str = "Получение доступных и недоступных стран и вывод административных единиц выбранной страны!"
+    about: str = "ISO-коды и адм.ед стран"
     description: str = """
                         `/Countries` - функция выводит список доступных ISO-кодов стран, а после принимает код от пользователя
                         и выводит в ответ административные единицы
-                        /ebf - Вот доступные ISO-коды стран:RU, US\n\nПожалуйста, введите код страны:RU\n\nАдминистративные единицы для страны с кодом RU\n\nJaroslavl
+                        /desc - Вот доступные ISO-коды стран:RU, US\n\nПожалуйста, введите код страны:RU\n\nАдминистративные единицы для страны с кодом RU\n\nJaroslavl
                         """
     state: bool = True
 
