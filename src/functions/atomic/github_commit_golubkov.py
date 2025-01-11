@@ -1,14 +1,5 @@
 """Модуль для поиска информации о ip-адресе"""
 
-# import os
-# import logging
-# import requests
-# from typing import List
-# import telebot
-# from telebot import types
-# from telebot.callback_data import CallbackData
-# from bot_func_abc import AtomicBotFunctionABC
-
 import os
 import logging
 from typing import List  # Стандартные библиотеки
@@ -18,7 +9,6 @@ import telebot
 from telebot import types  # Сторонние библиотеки
 
 from bot_func_abc import AtomicBotFunctionABC  # Локальные модули
-
 
 
 class IPLookupBotFunction(AtomicBotFunctionABC):
