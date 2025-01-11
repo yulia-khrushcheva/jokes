@@ -1,8 +1,8 @@
-import requests
-from typing import List
 import telebot
 from telebot import types
 from telebot.callback_data import CallbackData
+from typing import List
+import requests
 from bot_func_abc import AtomicBotFunctionABC
 
 class AtomicExampleBotFunction(AtomicBotFunctionABC):
@@ -34,7 +34,9 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
 
             quotes = []
             for _ in range(num_quotes):
-                response = requests.get("https://api.breakingbadquotes.xyz/v1/quotes", timeout=10)
+                response = requests.get(
+                    "https://api.breakingbadquotes.xyz/v1/quotes", timeout=10
+                )
                 if response.status_code == 200:
                     data = response.json()[0]
                     quote = data['quote']
