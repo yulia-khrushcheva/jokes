@@ -1,7 +1,9 @@
-import os
+"""
+Модуль для интеграции с API CheapShark и реализации функциональности поиска игровых сделок.
+"""
 import logging
-import requests
 from typing import List
+import requests
 from telebot import TeleBot, types
 from telebot.callback_data import CallbackData
 from bot_func_abc import AtomicBotFunctionABC
@@ -97,11 +99,11 @@ class GameDealsFunction(AtomicBotFunctionABC):
             params['title'] = title
 
         try:
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=10)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            logging.error(f"Ошибка при выполнении запроса: {e}")
+            logging.error("Ошибка при выполнении запроса: %s", e)
             return []
 
     def __send_deals(self, chat_id, deals):
