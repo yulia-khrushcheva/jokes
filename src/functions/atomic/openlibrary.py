@@ -65,6 +65,3 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
         def find_book_by_author(message: types.Message):
             """Поиск по автору"""
             __find_book_by_author(message)
-
-
-
