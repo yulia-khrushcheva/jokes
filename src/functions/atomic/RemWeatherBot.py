@@ -34,7 +34,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
                 bot.send_message(message.chat.id, "Пожалуйста, укажите количество цитат. Пример: /quote 3")
                 return
 
-            # Получение цитат с API
+            # Получение цитат с API!!
             quotes = []
             for _ in range(num_quotes):
                 response = requests.get("https://api.breakingbadquotes.xyz/v1/quotes")
