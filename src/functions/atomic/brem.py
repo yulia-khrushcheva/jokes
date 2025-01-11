@@ -12,7 +12,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
     """Модуль для получения цитат из сериала Breaking Bad через Telegram бота."""
 
     commands: List[str] = ["quote"]
-    authors: List[str] = ["Efrem1"]
+    authors: List[str] = ["Efrem199"]
     about: str = "Цитаты из Breaking Bad"  # Сокращено до 30 символов
     description: str = (
         "Этот бот позволяет получать случайные цитаты из сериала Breaking Bad. "
