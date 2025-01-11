@@ -11,7 +11,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
     """Open Library API"""
 
     commands: List[str] = ["find_book", "find_author"]
-    authors: List[str] = ["@tegrasgt"]
+    authors: List[str] = ["github.com/311421"]
     state: bool = True
     about: str = "Интеграция с Open Library"
     description: str = """Реализация поиска по книге и автору в API Open Library.
