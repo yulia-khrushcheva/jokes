@@ -83,4 +83,3 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
         except ValueError as ex:
             logging.exception(ex)
             self.bot.reply_to(message, f"Exception - {ex}")
-            
