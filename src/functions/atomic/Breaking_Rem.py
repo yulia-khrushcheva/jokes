@@ -13,7 +13,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
     """Пример реализации атомарной функции"""
 
     commands: List[str] = ["quote"]
-    authors: List[str] = ["FeyBM"]
+    authors: List[str] = ["Efrem1"]
     about: str = "Получение цитат из Breaking Bad!"
     description: str = (
         "Этот бот позволяет получать случайные цитаты из сериала Breaking Bad.\n"
