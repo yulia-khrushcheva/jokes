@@ -1,17 +1,15 @@
 """Модуль для работы с ISO-кодами стран и их административными единицами."""
 
 from typing import List
-
 import requests
 import telebot
 from telebot import types
 from telebot.callback_data import CallbackData
-
 from bot_func_abc import AtomicBotFunctionABC
 
 class CountryCodesBot(AtomicBotFunctionABC):
     """Класс для получения ISO-кодов стран и их административных единиц."""
-    commands: List[str] = ["Countries", "desc"]
+    commands: List[str] = ["Countries"]  # Keep only "Countries"
     authors: List[str] = ["TestStudentMichael"]
     about: str = "ISO-коды и адм.ед стран"
     description: str = (
@@ -27,7 +25,7 @@ class CountryCodesBot(AtomicBotFunctionABC):
         """Устанавливает обработчики событий для бота."""
         self.bot = bot
 
-        @bot.message_handler(commands=["Countries"])
+        @bot.message_handler(commands=self.commands)  # Use self.commands here
         def handle_countries_command(message: types.Message):
             """Обрабатывает команду получения списка стран."""
             iso_country_codes = self.get_iso_country_codes()
