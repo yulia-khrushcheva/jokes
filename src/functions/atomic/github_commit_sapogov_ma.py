@@ -70,7 +70,14 @@ class CountryCodesBot(AtomicBotFunctionABC):
 
     def get_administrative_divisions(self, country_code):
         """Получает административные единицы страны по её коду."""
-        url = f"https://rawcdn.githack.com/kamikazechaser/administrative-divisions-db/master/api/{country_code}.json"
+        #url = f"https://rawcdn.githack.com/kamikazechaser/
+        # administrative-divisions-db/master/api/{country_code}.json"
+        #url_part1 = f"https://rawcdn.githack.com/kamikazechaser/administrative-divisions-db/"
+        url_part1 = "https://rawcdn.githack.com/kamikazechaser/administrative-divisions-db/"
+        url_part2 = f"master/api/{country_code}.json"
+
+        # Соединяем части обратно
+        url = url_part1 + url_part2
 
         try:
             response = requests.get(url, timeout=10)  # Добавлен таймаут
