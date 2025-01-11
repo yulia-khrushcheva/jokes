@@ -9,10 +9,11 @@ from telebot.callback_data import CallbackData
 from bot_func_abc import AtomicBotFunctionABC
 
 class AtomicExampleBotFunction(AtomicBotFunctionABC):
-    """Example of implementation of atomic function"""
+    """Example of implementation of atomic function
+    """
 
     commands: List[str] = ["example", "ebf"]
-    authors: List[str] = ["IHVH"]
+    authors: List[str] = ["brokenk1d"]
     about: str = "Пример функции бота!"
     description: str = """В поле  *description* поместите подробную информацию о работе функции.
     Описание способов использования, логики работы. Примеры вызова функции - /ebf 
