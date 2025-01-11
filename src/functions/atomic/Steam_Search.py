@@ -1,5 +1,6 @@
 """
 Модуль для интеграции с API CheapShark и реализации функциональности поиска игровых сделок.
+
 """
 import logging
 from typing import List
