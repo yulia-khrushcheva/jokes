@@ -13,7 +13,7 @@ class GameDealsFunction(AtomicBotFunctionABC):
     """Функция для поиска игровых сделок с использованием CheapShark API."""
 
     commands: List[str] = ["search_deals", "deals"]
-    authors: List[str] = ["IHVH"]
+    authors: List[str] = ["VITAMINkaGG"]
     about: str = "Поиск выгодных игр"
     description: str = """
         Функция позволяет искать игровые предложения через API CheapShark.
