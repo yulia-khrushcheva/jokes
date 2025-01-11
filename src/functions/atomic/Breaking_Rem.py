@@ -1,3 +1,7 @@
+"""
+Модуль для получения случайных цитат из сериала Breaking Bad.
+"""
+
 from typing import List
 import telebot
 from telebot import types
@@ -5,12 +9,11 @@ from telebot.callback_data import CallbackData
 import requests
 from bot_func_abc import AtomicBotFunctionABC
 
-"""
-Модуль предоставляет функциональность для получения случайных цитат из сериала Breaking Bad.
-"""
 
 class AtomicExampleBotFunction(AtomicBotFunctionABC):
-    """Реализация атомарной функции для получения цитат Breaking Bad."""
+    """
+    Реализация атомарной функции для получения цитат Breaking Bad.
+    """
 
     commands: List[str] = ["quote"]
     authors: List[str] = ["FeyBM"]
@@ -26,7 +29,6 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
 
     def set_handlers(self, bot: telebot.TeleBot):
         """Устанавливает обработчики для команды."""
-
         self.bot = bot
         self.example_keyboard_factory = CallbackData('t_key_button', prefix=self.commands[0])
 
@@ -43,7 +45,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
                 )
                 return
 
-            # Получение цитат с API
+            # Получение цитат
             quotes = self._fetch_quotes(num_quotes)
             if not quotes:
                 bot.send_message(message.chat.id, "Не удалось получить цитаты.")
