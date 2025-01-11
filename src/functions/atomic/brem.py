@@ -1,77 +1,29 @@
 """
-Модуль для получения случайных цитат из сериала Breaking Bad.
+Модуль для получения данных другого API.
 """
 
 from typing import List
 import telebot
 from telebot import types
-from telebot.callback_data import CallbackData
-import requests
-from bot_func_abc import AtomicBotFunctionABC
+from base_atomic_bot_function import BaseAtomicBotFunction
 
 
-class AtomicExampleBotFunction(AtomicBotFunctionABC):
+class BremAtomicFunction(BaseAtomicBotFunction):
     """
-    Реализация атомарной функции для получения цитат Breaking Bad.
+    Пример атомарной функции для другого источника данных.
     """
 
-    commands: List[str] = ["quote"]
+    commands: List[str] = ["brem"]
     authors: List[str] = ["FeyBM"]
-    about: str = "Получение цитат из Breaking Bad!"
-    description: str = (
-        "Этот бот позволяет получать случайные цитаты из сериала Breaking Bad.\n"
-        "Для получения цитат используйте команду /quote <количество>."
-    )
-    state: bool = True
-
-    bot: telebot.TeleBot
-    example_keyboard_factory: CallbackData
+    about: str = "Пример получения данных из другого API."
+    description: str = "Используйте команду /brem <параметр> для получения данных."
 
     def set_handlers(self, bot: telebot.TeleBot):
         """Устанавливает обработчики для команды."""
-        self.bot = bot
-        self.example_keyboard_factory = CallbackData('t_key_button', prefix=self.commands[0])
+        super().set_base_handlers(bot)
 
         @bot.message_handler(commands=self.commands)
-        def send_quote(message: types.Message):
-            """Обрабатывает команду /quote."""
-            try:
-                # Извлечение количества цитат из сообщения
-                num_quotes = int(message.text.split()[1])
-            except (IndexError, ValueError):
-                bot.send_message(
-                    message.chat.id,
-                    "Пожалуйста, укажите количество цитат. Пример: /quote 3"
-                )
-                return
-
-            # Получение цитат
-            quotes = self._fetch_quotes(num_quotes)
-            if not quotes:
-                bot.send_message(message.chat.id, "Не удалось получить цитаты.")
-                return
-
-            # Отправка полученных цитат
-            for quote in quotes:
-                bot.send_message(message.chat.id, quote)
-
-    def _fetch_quotes(self, num: int) -> List[str]:
-        """
-        Получение случайных цитат из API Breaking Bad.
-        Возвращает список строк с цитатами.
-        """
-        quotes = []
-        for _ in range(num):
-            try:
-                response = requests.get(
-                    "https://api.breakingbadquotes.xyz/v1/quotes",
-                    timeout=5
-                )
-                if response.status_code == 200:
-                    data = response.json()[0]
-                    quotes.append(f"Цитата: {data['quote']}\nАвтор: {data['author']}")
-                else:
-                    return []
-            except requests.RequestException:
-                return []
-        return quotes
+        def send_data(message: types.Message):
+            """Обрабатывает команду /brem."""
+            # Реализация для обработки команды
+            pass
