@@ -1,6 +1,8 @@
+"""Модуль, присылающий цитаты"""
+
 import requests
-from typing import List
 import telebot
+from typing import List
 from telebot import types
 from telebot.callback_data import CallbackData
 from bot_func_abc import AtomicBotFunctionABC
@@ -32,7 +34,8 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
             try:
                 num_quotes = int(message.text.split()[1])  # Получаем число после команды /quote
             except (IndexError, ValueError):
-                bot.send_message(message.chat.id, "Пожалуйста, укажите количество цитат. Пример: /quote 3")
+                msg = "Пожалуйста, укажите количество цитат. Пример: /quote 3"
+                bot.send_message(message.chat.id, msg)
                 return
 
             quotes = self.get_quotes(num_quotes)
