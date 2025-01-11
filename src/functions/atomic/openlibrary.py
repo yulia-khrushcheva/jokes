@@ -14,7 +14,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
     authors: List[str] = ["@tegrasgt"]
     state: bool = True
     about: str = "Интеграция с Open Library"
-    description: str = """Реализация поиска по книге и автору в API Open Library. 
+    description: str = """Реализация поиска по книге и автору в API Open Library.
     Ищет по книге. И по Автору тоже ищет. /find_book для поиска по книге. 
     /find_author ищет по автору."""
     example_keyboard_factory: CallbackData
