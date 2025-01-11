@@ -70,9 +70,6 @@ class CountryCodesBot(AtomicBotFunctionABC):
 
     def get_administrative_divisions(self, country_code):
         """Получает административные единицы страны по её коду."""
-        #url = f"https://rawcdn.githack.com/kamikazechaser/
-        # administrative-divisions-db/master/api/{country_code}.json"
-        #url_part1 = f"https://rawcdn.githack.com/kamikazechaser/administrative-divisions-db/"
         url_part1 = "https://rawcdn.githack.com/kamikazechaser/administrative-divisions-db/"
         url_part2 = f"master/api/{country_code}.json"
 
@@ -87,6 +84,6 @@ class CountryCodesBot(AtomicBotFunctionABC):
         except requests.exceptions.HTTPError as err:
             print(f"Произошла ошибка HTTP: {err}")
             return []  # Возвращаем пустой список при ошибке
-        except Exception as err:
-            print(f"Произошла ошибка: {err}")
-            return []  # Возвращаем пустой список при ошибке
+        except requests.exceptions.Timeout as timeout_err:
+            print(f"Время ожидания истекло: {timeout_err}")
+        return []  # Return an empty list on timeout error
