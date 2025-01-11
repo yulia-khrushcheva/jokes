@@ -29,7 +29,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
             try:
                 num_quotes = int(message.text.split()[1])  # Получаем число после команды /quote
             except (IndexError, ValueError):
-                bot.send_message(message.chat.id, "Пожалуйста, укажите количество цитат. Пример: /quote 3")
+                bot.send_message(message.chat.id, "Пожалуйста, укажите кол-во цитат. Пример: /quote 3")
                 return
 
             quotes = []
