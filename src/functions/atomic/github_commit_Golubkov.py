@@ -22,9 +22,7 @@ from bot_func_abc import AtomicBotFunctionABC  # Локальные модули
 
 
 class IPLookupBotFunction(AtomicBotFunctionABC):
-    """
-    Модуль для поиска информации о IP адресе с использованием API ipstack.
-    """
+    """Модуль для поиска информации о IP адресе с использованием API ipstack."""
 
     commands: List[str] = ["iplookup"]
     authors: List[str] = ["Nikolay"]
