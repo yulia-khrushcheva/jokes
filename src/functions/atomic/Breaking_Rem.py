@@ -6,14 +6,14 @@ import requests
 from bot_func_abc import AtomicBotFunctionABC
 
 """
-Модуль реализует атомарную функцию для получения цитат из сериала Breaking Bad.
+Модуль предоставляет функциональность для получения случайных цитат из сериала Breaking Bad.
 """
 
 class AtomicExampleBotFunction(AtomicBotFunctionABC):
-    """Пример реализации атомарной функции"""
+    """Реализация атомарной функции для получения цитат Breaking Bad."""
 
     commands: List[str] = ["quote"]
-    authors: List[str] = ["Efrem1"]
+    authors: List[str] = ["FeyBM"]
     about: str = "Получение цитат из Breaking Bad!"
     description: str = (
         "Этот бот позволяет получать случайные цитаты из сериала Breaking Bad.\n"
@@ -25,14 +25,14 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
     example_keyboard_factory: CallbackData
 
     def set_handlers(self, bot: telebot.TeleBot):
-        """Устанавливает обработчики для команды"""
+        """Устанавливает обработчики для команды."""
 
         self.bot = bot
         self.example_keyboard_factory = CallbackData('t_key_button', prefix=self.commands[0])
 
         @bot.message_handler(commands=self.commands)
         def send_quote(message: types.Message):
-            """Обрабатывает команду /quote"""
+            """Обрабатывает команду /quote."""
             try:
                 # Извлечение количества цитат из сообщения
                 num_quotes = int(message.text.split()[1])
