@@ -25,5 +25,8 @@ class BremAtomicFunction(BaseAtomicBotFunction):
         @bot.message_handler(commands=self.commands)
         def send_data(message: types.Message):
             """Обрабатывает команду /brem."""
-            # Реализация для обработки команды
-            pass
+            # Пример использования аргумента message
+            bot.send_message(
+                message.chat.id,
+                "Функционал команды /brem ещё не реализован. Ожидайте обновлений!"
+            )
