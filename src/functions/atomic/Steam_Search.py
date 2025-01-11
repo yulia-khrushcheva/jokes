@@ -106,6 +106,7 @@ class GameDealsFunction(AtomicBotFunctionABC):
             logging.error("Ошибка при выполнении запроса: %s", e)
             return []
 
+
     def __send_deals(self, chat_id, deals):
         """Отправляет найденные сделки пользователю."""
         if not deals:
