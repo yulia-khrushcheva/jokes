@@ -15,7 +15,7 @@ class IPLookupBotFunction(AtomicBotFunctionABC):
     """Модуль для поиска информации о IP адресе с использованием API ipstack."""
 
     commands: List[str] = ["iplookup"]
-    authors: List[str] = ["Nikolay"]
+    authors: List[str] = ["Icestorm-dev"]
     about: str = "Информация об IP-адресе."
     description: str = """Эта функция позволяет получать информацию об IP-адресах через API ipstack.
     Используйте команду /iplookup <IP-адрес>, чтобы получить данные."""
