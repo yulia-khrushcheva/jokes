@@ -12,7 +12,7 @@ class AtomicExampleBotFunction(AtomicBotFunctionABC):
     """Example of implementation of atomic function"""
 
     commands: List[str] = ["example", "ebf"]
-    authors: List[str] = ["IHVH"]
+    authors: List[str] = ["Белинский Андрей"]
     about: str = "Пример функции бота!"
     description: str = """В поле  *description* поместите подробную информацию о работе функции.
     Описание способов использования, логики работы. Примеры вызова функции - /ebf 
