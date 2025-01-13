@@ -7,24 +7,23 @@ from telebot.callback_data import CallbackData
 import requests
 from bot_func_abc import AtomicBotFunctionABC
 
-class AtomicExampleBotFunction(AtomicBotFunctionABC):
+class OpenLibraryBotFunction(AtomicBotFunctionABC):
     """Open Library API"""
 
     commands: List[str] = ["find_book", "find_author"]
-    authors: List[str] = ["github.com/311421"]
+    authors: List[str] = ["311421"]
     state: bool = True
     about: str = "Интеграция с Open Library"
     description: str = """Реализация поиска по книге и автору в API Open Library.
     Ищет по книге. И по Автору тоже ищет. /find_book для поиска по книге. 
     /find_author ищет по автору."""
-    example_keyboard_factory: CallbackData
+    
     bot: telebot.TeleBot
 
     def set_handlers(self, bot: telebot.TeleBot):
         """Модуль хэндлеров для обращения к Open Library"""
         self.bot = bot
-        self.example_keyboard_factory = CallbackData('t_key_button', prefix=self.commands[0])
-
+        
         def __find_book_by_name(message):
             name = "+".join(message.text.replace(" ", "+").split("+")[1:])
             req = ("https://openlibrary.org/search.json?q=" + name +
