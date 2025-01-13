@@ -18,7 +18,7 @@ class DogFactBotFunction(AtomicBotFunctionABC):
     """
 
     commands: List[str] = ["dogfact"]
-    authors: List[str] = ["Белинский Андрей"]
+    authors: List[str] = ["brokenk1d"]
     about: str = "Интересные факты о собаках."
     description: str = """Эта функция позволяет получать интересные факты о собаках.
     Просто вызовите команду /dogfact, и бот предоставит вам увлекательный факт.
