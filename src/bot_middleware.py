@@ -105,7 +105,7 @@ class Middleware(BaseMiddleware):
         if message.chat.description:
             chat.description = message.chat.description
         else:
-            chat.description = message.chat.type + " - " + message.chat.username
+            chat.description = f"{message.chat.type} - {message.chat.username}"
         return chat
 
     def __new_message(self, user: User, chat: Chat, txt: str, data: str | None)-> Message:
