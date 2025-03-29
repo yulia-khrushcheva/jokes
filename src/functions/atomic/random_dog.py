@@ -1,40 +1,77 @@
+"""Модуль для реализации функции бота для полученияслучайных картинок собак."""
+
+import os
+import logging
 import requests
-from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler
-from telegram.ext import filters
-from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton 
-import requests
+from typing import List
+import telebot
+from telebot import types
+from telebot.callback_data import CallbackData
+from bot_func_abc import AtomicBotFunctionABC
 
-def get_random_dog():
-    """Возвращает URL случайного изображения собаки с random.dog."""
-    while True:
-        response = requests.get('https://random.dog/woof.json')
-        data = response.json()
-        if data['url'].endswith(('.jpg', '.jpeg', '.png')):
-            return data['url']
+class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
+    """Реализация функции бота для получения случайных картинок собак."""
 
-async def send_dog_images(update, context, count):
-    """Отправляет указанное количество изображений собак в чат."""
-    for _ in range(count):
-        image_url = get_random_dog()
-        await update.message.reply_photo(photo=image_url)
-    await update.message.reply_text('Готово!')
+    commands: List[str] = ["randomdog", "rdog", "randog"]
+    authors: List[str] = ["TeleMatriDam"]
+    about: str = "Генератор случайных картинок собак!"
+    description: str = """Вызывает случайное изображение собаки из API.
+    Можно выбрать количество картинок (1-3).
+    Пример вызова функции - /dog
+    """
+    state: bool = True
 
-async def handle_dog_command(update, context):
-    """Обрабатывает команду /dog с выбором количества изображений."""
-    inline_keyboard = [
-        [InlineKeyboardButton("1", callback_data='1'),
-         InlineKeyboardButton("2", callback_data='2'),
-         InlineKeyboardButton("3", callback_data='3')]
-    ]
-    markup = InlineKeyboardMarkup(inline_keyboard)
-    await update.message.reply_text('Сколько изображений сгенерировать?', reply_markup=markup)
+    bot: telebot.TeleBot
+    dog_keyboard_factory: CallbackData
 
-async def handle_dog_callback(update, context):
-    """Обрабатывает callback с выбором количества изображений."""
-    query = update.callback_query
-    await query.answer()
-    count = int(query.data)
-    await send_dog_images(query.message, context, count)
-    reply_keyboard = [['/dog']] 
-    markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
-    await query.message.reply_text('Хочешь еще?', reply_markup=markup)
+    def set_handlers(self, bot: telebot.TeleBot):
+        """Set message handlers"""
+
+        self.bot = bot
+        self.dog_keyboard_factory = CallbackData('dog_button', prefix=self.commands[0])
+
+        @bot.message_handler(commands=self.commands)
+        def random_dog_message_handler(message: types.Message):
+            markup = self.__gen_markup()
+            bot.send_message(chat_id=message.chat.id, text="Выберите количество изображений:", reply_markup=markup)
+
+        @bot.callback_query_handler(func=None, config=self.dog_keyboard_factory.filter())
+        def dog_keyboard_callback(call: types.CallbackQuery):
+            callback_data: dict = self.dog_keyboard_factory.parse(callback_data=call.data)
+            if callback_data['dog_button'] == "back":
+                self.random_dog_message_handler(call.message)
+            else:
+                count = int(callback_data['dog_button'])
+                images = self.__get_random_dog_images(count)
+                for img in images:
+                    bot.send_photo(chat_id=call.message.chat.id, photo=img, caption=f"Вот ваша случайная собака!")
+
+    def __get_random_dog_images(self, count=1):
+        """Fetches a given number of random dog images from Random Dog API, ensuring only images are returned."""
+        images = []
+        attempts = 0
+        while len(images) < count and attempts < count * 2:  # Extra attempts to get valid images
+            try:
+                response = requests.get("https://random.dog/woof.json")
+                if response.status_code == 200:
+                    img_url = response.json().get("url")
+                    if img_url and img_url.endswith(('jpg', 'jpeg', 'png', 'gif')):
+                        images.append(img_url)
+                attempts += 1
+            except Exception as ex:
+                logging.exception(ex)
+                attempts += 1
+        return images
+
+    def __gen_markup(self):
+        markup = types.InlineKeyboardMarkup()
+        markup.row_width = 3
+        markup.add(
+            types.InlineKeyboardButton("1", callback_data=self.dog_keyboard_factory.new(dog_button="1")),
+            types.InlineKeyboardButton("2", callback_data=self.dog_keyboard_factory.new(dog_button="2")),
+            types.InlineKeyboardButton("3", callback_data=self.dog_keyboard_factory.new(dog_button="3"))
+        )
+        markup.add(
+            types.InlineKeyboardButton("Назад", callback_data=self.dog_keyboard_factory.new(dog_button="back"))
+        )
+        return markup

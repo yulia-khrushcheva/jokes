@@ -10,9 +10,6 @@ from telebot.callback_data import CallbackData
 from load_atomic import load_atomic_functions
 from bot_middleware import Middleware
 from bot_callback_filter import BotCallbackCustomFilter
-from functions.atomic.random_dog import handle_dog_command, handle_dog_callback
-from telegram import Update
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler
 
 class StartApp():
     """Configuring and running the application"""
@@ -141,9 +138,3 @@ class StartApp():
             msg = f"{funct.about} \n /{cmd} \n{funct.description} \n"
             msg += f"Авторы: {authors}"
             self.bot.send_message(text=msg, chat_id=call.message.chat.id)
-    
-    def main():
-        application = Application.builder().token(os.getenv('TBOT_TOKEN')).build()
-        application.add_handler(CommandHandler('dog', handle_dog_command))
-        application.add_handler(CallbackQueryHandler(handle_dog_callback))
-        application.run_polling()
