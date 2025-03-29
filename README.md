@@ -42,7 +42,7 @@ The code must be organized in a class that inherits from the abstract class **At
  ## Please run tests and check code with pylint before submitting.
 
 ```
-pylint $(git ls-files '*.py')
+pylint .\src\functions\atomic\<your_file>.py
 ```
 
 For an example, take a look at the file **[example_bot_function.py](https://github.com/IHVH/system-integration-bot-2/blob/master/src/functions/atomic/example_bot_function.py)**
