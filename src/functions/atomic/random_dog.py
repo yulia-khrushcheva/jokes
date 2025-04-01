@@ -1,13 +1,13 @@
-"""Модуль для реализации функции бота для полученияслучайных картинок собак."""
+"""Модуль для реализации функции бота для получения случайных картинок собак."""
 
-import os
 import logging
-import requests
 from typing import List
+import requests
 import telebot
 from telebot import types
 from telebot.callback_data import CallbackData
 from bot_func_abc import AtomicBotFunctionABC
+
 
 class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
     """Реализация функции бота для получения случайных картинок собак."""
@@ -17,7 +17,7 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
     about: str = "Генератор случайных картинок собак!"
     description: str = """Вызывает случайное изображение собаки из API.
     Можно выбрать количество картинок (1-3).
-    Пример вызова функции - /dog
+    Пример вызова функции - /randomdog
     """
     state: bool = True
 
@@ -33,7 +33,7 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
         @bot.message_handler(commands=self.commands)
         def random_dog_message_handler(message: types.Message):
             markup = self.__gen_markup()
-            bot.send_message(chat_id=message.chat.id, text="Выберите количество изображений:", reply_markup=markup)
+            bot.send_message(chat_id=message.chat.id, text="Choose qty pic:", reply_markup=markup)
 
         @bot.callback_query_handler(func=None, config=self.dog_keyboard_factory.filter())
         def dog_keyboard_callback(call: types.CallbackQuery):
@@ -44,21 +44,21 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
                 count = int(callback_data['dog_button'])
                 images = self.__get_random_dog_images(count)
                 for img in images:
-                    bot.send_photo(chat_id=call.message.chat.id, photo=img, caption=f"Вот ваша случайная собака!")
+                    bot.send_photo(chat_id=call.message.chat.id, photo=img)
 
     def __get_random_dog_images(self, count=1):
-        """Fetches a given number of random dog images from Random Dog API, ensuring only images are returned."""
+        """Fetches a given number of random dog images from Random Dog API."""
         images = []
         attempts = 0
-        while len(images) < count and attempts < count * 2:  # Extra attempts to get valid images
+        while len(images) < count and attempts < count * 2:
             try:
-                response = requests.get("https://random.dog/woof.json")
+                response = requests.get("https://random.dog/woof.json", timeout=5)
                 if response.status_code == 200:
                     img_url = response.json().get("url")
                     if img_url and img_url.endswith(('jpg', 'jpeg', 'png', 'gif')):
                         images.append(img_url)
                 attempts += 1
-            except Exception as ex:
+            except requests.exceptions.RequestException as ex:
                 logging.exception(ex)
                 attempts += 1
         return images
@@ -66,12 +66,11 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
     def __gen_markup(self):
         markup = types.InlineKeyboardMarkup()
         markup.row_width = 3
+        btn = types.InlineKeyboardButton
+        factory = self.dog_keyboard_factory
         markup.add(
-            types.InlineKeyboardButton("1", callback_data=self.dog_keyboard_factory.new(dog_button="1")),
-            types.InlineKeyboardButton("2", callback_data=self.dog_keyboard_factory.new(dog_button="2")),
-            types.InlineKeyboardButton("3", callback_data=self.dog_keyboard_factory.new(dog_button="3"))
-        )
-        markup.add(
-            types.InlineKeyboardButton("Назад", callback_data=self.dog_keyboard_factory.new(dog_button="back"))
+            btn("1", callback_data=factory.new(dog_button="1")),
+            btn("2", callback_data=factory.new(dog_button="2")),
+            btn("3", callback_data=factory.new(dog_button="3"))
         )
         return markup
