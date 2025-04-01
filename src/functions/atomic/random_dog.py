@@ -17,7 +17,7 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
     about: str = "Генератор случайных картинок собак!"
     description: str = """Вызывает случайное изображение собаки из API.
     Можно выбрать количество картинок (1-3).
-    Пример вызова функции - /randomdog
+    Пример вызова функции - /dog
     """
     state: bool = True
 
@@ -50,7 +50,7 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
         """Fetches a given number of random dog images from Random Dog API."""
         images = []
         attempts = 0
-        while len(images) < count and attempts < count * 2:
+        while len(images) < count and attempts < count * 2:  # Extra attempts to get valid images
             try:
                 response = requests.get("https://random.dog/woof.json", timeout=5)
                 if response.status_code == 200:
