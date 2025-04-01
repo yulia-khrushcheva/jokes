@@ -26,14 +26,10 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
 
     def set_handlers(self, bot: telebot.TeleBot):
         """Set message handlers"""
-
         self.bot = bot
         self.dog_keyboard_factory = CallbackData('dog_button', prefix=self.commands[0])
 
-        @bot.message_handler(commands=self.commands)
-        def random_dog_message_handler(message: types.Message):
-            markup = self.__gen_markup()
-            bot.send_message(chat_id=message.chat.id, text="Choose qty pic:", reply_markup=markup)
+        self.bot.message_handler(commands=self.commands)(self.random_dog_message_handler)
 
         @bot.callback_query_handler(func=None, config=self.dog_keyboard_factory.filter())
         def dog_keyboard_callback(call: types.CallbackQuery):
@@ -45,6 +41,11 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
                 images = self.__get_random_dog_images(count)
                 for img in images:
                     bot.send_photo(chat_id=call.message.chat.id, photo=img)
+
+    def random_dog_message_handler(self, message: types.Message):
+        """Handler for random dog message commands."""
+        markup = self.__gen_markup()
+        self.bot.send_message(chat_id=message.chat.id, text="Choose qty pic:", reply_markup=markup)
 
     def __get_random_dog_images(self, count=1):
         """Fetches a given number of random dog images from Random Dog API."""
