@@ -15,10 +15,7 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
     commands: List[str] = ["randomdog", "rdog", "randog"]
     authors: List[str] = ["TeleMatriDam"]
     about: str = "Генератор случайных картинок собак!"
-    description: str = """Вызывает случайное изображение собаки из API.
-    Можно выбрать количество картинок (1-3).
-    Пример вызова функции - /dog
-    """
+    description: str = """Вызывает случайное изображение собаки из API"""
     state: bool = True
 
     bot: telebot.TeleBot
