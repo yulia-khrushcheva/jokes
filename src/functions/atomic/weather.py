@@ -4,8 +4,8 @@
 """
 
 import requests
-import telebot  # Добавлено: импорт библиотеки telebot
-from bot_func_abc import AtomicBotFunctionABC  # Базовый класс для атомарных функций
+import telebot 
+from bot_func_abc import AtomicBotFunctionABC  
 
 class WeatherBotFunction(AtomicBotFunctionABC):
     """Модуль для получения текущей погоды через Telegram-бота."""
@@ -20,14 +20,14 @@ class WeatherBotFunction(AtomicBotFunctionABC):
     state = True
 
     def __init__(self):
-        self.api_key = "3e10ab6eb64818b698f575068284570b"  # Ваш API-ключ OpenWeatherMap
+        self.api_key = "3e10ab5tg6g818b6th575068284570b" 
         self.api_url = "http://api.openweathermap.org/data/2.5/weather"
 
     def set_handlers(self, bot: telebot.TeleBot):
         """Установка обработчиков для команды /weather."""
         @bot.message_handler(commands=self.commands)
         def handle_weather_command(message: telebot.types.Message):
-            # Получение города из команды
+           
             city = " ".join(message.text.split()[1:]).strip()
             if not city:
                 bot.send_message(message.chat.id, "Укажите город. Пример: /weather Москва")
@@ -56,11 +56,10 @@ class WeatherBotFunction(AtomicBotFunctionABC):
             response.raise_for_status()
             data = response.json()
 
-            # Проверка на успешный ответ от API
+           
             if data.get("cod") != 200:
                 return None
 
-            # Формирование сообщения о погоде
             weather_message = (
                 f"Погода в городе {city}:\n"
                 f"Температура: {data['main']['temp']}°C\n"
