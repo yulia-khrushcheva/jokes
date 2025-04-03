@@ -11,7 +11,7 @@ class WeatherBotFunction(AtomicBotFunctionABC):
     """Модуль для получения текущей погоды через Telegram-бота."""
 
     commands = ["weather"]
-    authors = ["YourGitHubUsername"]
+    authors = ["Bervev"]
     about = "Погода в городе"
     description = (
         "Бот позволяет узнать текущую погоду в указанном городе. "
