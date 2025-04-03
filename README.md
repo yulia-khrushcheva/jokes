@@ -20,6 +20,8 @@ TBOTTOKEN=
 
 EXAMPLETOKEN=1234567890
 IPSTACK_API_KEY=
+OPENWEATHER_API_KEY=
+
 ```
 
 ## Tokens
@@ -28,6 +30,8 @@ Links to information about tokens
 [GITHUBTOKEN](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
 
 [IPSTACK_API_KEY](https://ipstack.com/)
+
+[OPENWEATHER_API_KEY](https://openweathermap.org). - To receive a token for the weather function, register and create a key on the OpenWeatherMap platform.
 
 ## Adding telegram bot functions.
 Dear students, when implementing your functions, adhere to the following recommendations.
