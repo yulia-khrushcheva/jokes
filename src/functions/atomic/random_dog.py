@@ -33,13 +33,17 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
         @bot.callback_query_handler(func=None, config=self.dog_keyboard_factory.filter())
         def dog_keyboard_callback(call: types.CallbackQuery):
             callback_data: dict = self.dog_keyboard_factory.parse(callback_data=call.data)
-            if callback_data['dog_button'] == "back":
-                self.random_dog_message_handler(call.message)
-            else:
-                count = int(callback_data['dog_button'])
-                images = self.__get_random_dog_images(count)
-                for img in images:
-                    bot.send_photo(chat_id=call.message.chat.id, photo=img)
+            dog_button = callback_data['dog_button']
+            action = self.random_dog_message_handler if dog_button == "back" else \
+            lambda msg: self._send_dog_images(msg, dog_button)
+            action(call.message)
+
+    def _send_dog_images(self, message: types.Message, dog_button: str):
+        """Helper method to send dog images based on the button pressed."""
+        count = int(dog_button)
+        images = self.__get_random_dog_images(count)
+        for img in images:
+            self.bot.send_photo(chat_id=message.chat.id, photo=img)
 
     def random_dog_message_handler(self, message: types.Message):
         """Handler for random dog message commands."""
@@ -55,8 +59,10 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
             try:
                 response = requests.get("https://random.dog/woof.json", timeout=5)
                 img_url = response.json().get("url")
-                if isinstance(img_url, str) and img_url.endswith(image_extensions):
-                    images.append(img_url)
+                if not isinstance(img_url, str) or not img_url.endswith(image_extensions):
+                    attempts += 1
+                    continue
+                images.append(img_url)
                 attempts += 1
             except (requests.exceptions.RequestException, ValueError) as ex:
                 logging.exception(ex)
