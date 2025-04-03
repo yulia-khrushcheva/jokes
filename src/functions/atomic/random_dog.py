@@ -32,11 +32,14 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
 
         @bot.callback_query_handler(func=None, config=self.dog_keyboard_factory.filter())
         def dog_keyboard_callback(call: types.CallbackQuery):
-            callback_data: dict = self.dog_keyboard_factory.parse(callback_data=call.data)
+            callback_data = self.dog_keyboard_factory.parse(callback_data=call.data)
             dog_button = callback_data['dog_button']
-            action = self.random_dog_message_handler if dog_button == "back" else \
-            lambda msg: self._send_dog_images(msg, dog_button)
-            action(call.message)
+            actions = {
+                "1": lambda msg: self._send_dog_images(msg, "1"),
+                "2": lambda msg: self._send_dog_images(msg, "2"),
+                "3": lambda msg: self._send_dog_images(msg, "3")
+            }
+            actions[dog_button](call.message)
 
     def _send_dog_images(self, message: types.Message, dog_button: str):
         """Helper method to send dog images based on the button pressed."""
