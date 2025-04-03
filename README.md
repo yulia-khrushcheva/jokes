@@ -1,6 +1,6 @@
 # [@sstmintgrtn_bot](https://t.me/sstmintgrtn_bot)
 ![@sstmintgrtn_bot](https://www.gravatar.com/avatar/7ceee8792cfff9591510a6fe04131afa?size=200&default=robohash&forcedefault=y)
-OpenWeatherMap API Key - To receive a token for the weather function, register and create a key on the OpenWeatherMap platform.
+[OpenWeatherMap](https://openweathermap.org). - To receive a token for the weather function, register and create a key on the OpenWeatherMap platform.
 The Telegram bot is designed to master the practical skills of integrating information systems and gain experience in working together on a project in a distributed team.
 
 The bot combines various authoring functions written by students in the process of studying the discipline "system integration of software applications".
