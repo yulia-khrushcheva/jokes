@@ -4,6 +4,7 @@
 """
 
 import requests
+import telebot  # Добавлено: импорт библиотеки telebot
 from bot_func_abc import AtomicBotFunctionABC  # Базовый класс для атомарных функций
 
 class WeatherBotFunction(AtomicBotFunctionABC):
