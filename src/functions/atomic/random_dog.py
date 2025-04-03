@@ -52,13 +52,12 @@ class AtomicRandomDogBotFunction(AtomicBotFunctionABC):
         attempts = 0
         while len(images) < count and attempts < count * 2:
             try:
-                response = requests.get("https://random.dog/woof.json", timeout=5)
-                if response.status_code == 200:
-                    img_url = response.json().get("url")
-                    if img_url and img_url.endswith(('jpg', 'jpeg', 'png', 'gif')):
-                        images.append(img_url)
+                response = requests.get("https://random.dog/woof.json")
+                img_url = response.json().get("url")
+                if img_url and isinstance(img_url, str) and img_url.endswith(('jpg', 'jpeg', 'png', 'gif')):
+                    images.append(img_url)
                 attempts += 1
-            except requests.exceptions.RequestException as ex:
+            except (requests.exceptions.RequestException, ValueError) as ex:
                 logging.exception(ex)
                 attempts += 1
         return images
