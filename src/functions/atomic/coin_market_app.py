@@ -3,7 +3,7 @@
 import os
 import logging
 import requests
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import telebot
 from telebot import types
 from telebot.callback_data import CallbackData
