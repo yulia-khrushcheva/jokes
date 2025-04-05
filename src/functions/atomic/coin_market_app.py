@@ -16,7 +16,7 @@ class AtomicCoinMarketFunction(AtomicBotFunctionABC):
 
     commands: List[str] = ["crypto", "market"]
     authors: List[str] = ["Nick"]
-    about: str = "Получение информации о криптовалютах!"
+    about: str = "Информация о криптовалютах"
     description: str = """Функция предоставляет актуальную информацию о криптовалютах
     с CoinMarketCap.
     Примеры использования:
