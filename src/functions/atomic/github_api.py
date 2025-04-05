@@ -16,7 +16,7 @@ class GithubAPICommits(AtomicBotFunctionABC):
     about: str = "Информация о коммитах"
     description: str = """Функция предназначена для получения информации о
       коммитах в репозитори https://github.com/IHVH/system-integration-bot-2 
-      для вызова функции можно использовать команды `/git` `/github`  
+      для вызова функции можно использовать команды `/git 2` `/github 3`  
       """
     state: bool = True
 
