@@ -29,7 +29,19 @@ class GithubAPICommits(AtomicBotFunctionABC):
 
         @bot.message_handler(commands=self.commands)
         def message_hendler_for_github_api(message: types.Message):
-            messeges = self.get_data(count=2)
+            messeges = []
+            parts = message.text.split(" ")
+            if len(parts) == 2:
+                cnt_str = parts[1]
+                if cnt_str.isdigit():
+                    messeges = self.get_data(int(cnt_str))
+                else:
+                    msg = "Укажите количество коммитов! `/git 5`"
+                    bot.send_message(text=msg, chat_id=message.chat.id)
+
+            else:
+                messeges = self.get_data()
+
             for commit in messeges:
                 bot.send_message(text=commit, chat_id=message.chat.id)
 
@@ -53,7 +65,7 @@ class GithubAPICommits(AtomicBotFunctionABC):
             commit_url = commit['html_url']
             msg = commit['commit']['message']
 
-            message = f"author - {author} \n{msg} \n{date} {commit_url}"
+            message = f"author - {author} \n{msg} \n{date} \n{commit_url}"
             result.append(message)
 
         return result
