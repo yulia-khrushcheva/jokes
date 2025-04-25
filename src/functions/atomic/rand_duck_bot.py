@@ -28,12 +28,12 @@ class AtomicRandomDuckBotFunction(AtomicBotFunctionABC):
             elif cmd == "multiduck":
                 try:
                     count = int(message.text.split()[1])
-                    if 1 <= count <= 3:
+                    if 1 <= count <= 7:
                         self._send_duck_images(message, count)
                     else:
-                        bot.send_message(message.chat.id, "Число от 1 до 3!")
+                        bot.send_message(message.chat.id, "Число от 1 до 7!")
                 except (IndexError, ValueError):
-                    bot.send_message(message.chat.id, "Использование: /multiduck <1-3>")
+                    bot.send_message(message.chat.id, "Использование: /multiduck <1-7>")
             elif cmd == "ducktype":
                 try:
                     ext = message.text.split()[1].lower()
@@ -54,7 +54,7 @@ class AtomicRandomDuckBotFunction(AtomicBotFunctionABC):
 
     def _get_random_duck_images(self, count=1, extension=None):
         images = []
-        for _ in range(count * 3):
+        for _ in range(count * 7):
             if len(images) >= count:
                 break
             try:
