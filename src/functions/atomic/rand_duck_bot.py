@@ -10,7 +10,7 @@ class AtomicRandomDuckBotFunction(AtomicBotFunctionABC):
     authors = ["GrandGeraldio"]
     about = "Генератор картинок уток!"
     description = ("Команды: /randomduck - одно изображение, "
-                   "/multiduck <1-3> - несколько, "
+                   "/multiduck <1-7> - несколько, "
                    "/ducktype <gif|jpg|jpeg|png> - по типу.")
     state = True
 
