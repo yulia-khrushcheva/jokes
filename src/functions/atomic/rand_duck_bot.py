@@ -1,7 +1,7 @@
 """
-Модуль для реализации функции бота для получения случайных картинок уток.
-Использует API RandomDuck.
-"""
+ Модуль для реализации функции бота для получения случайных картинок уток.
+ Использует API RandomDuck.
+ """
 
 import logging
 import requests
@@ -10,23 +10,26 @@ from telebot import types
 from bot_func_abc import AtomicBotFunctionABC
 
 class AtomicRandomDuckBotFunction(AtomicBotFunctionABC):
-"""
-Модуль для создания одной или нескольких картинок уток.
-Также изображение с указанным расширением (gif, jpg ....).
-"""
+
+    """
+    Модуль для создания одной или нескольких картинок уток.
+    Также изображение с указанным расширением.
+    """
 
     commands = ["randomduck", "multiduck", "ducktype"]
     authors = ["GrandGeraldio"]
     about = "Генератор картинок уток!"
-    description = ("Команды: /randomduck - одно изображение, "
-                   "/multiduck <1-7> - несколько, "
-                   "/ducktype <gif|jpg|jpeg|png> - по типу.")
+    description = """Команды: /randomduck - одно изображение,
+                   /multiduck <1-7> - несколько,
+                   /ducktype <gif|jpg|jpeg|png> - по типу.
+                   """
     state = True
 
     def __init__(self):
         self.bot = None
 
     def set_handlers(self, bot: telebot.TeleBot):
+        """Set message handlers"""
         self.bot = bot
 
         @bot.message_handler(commands=self.commands)
@@ -56,8 +59,8 @@ class AtomicRandomDuckBotFunction(AtomicBotFunctionABC):
     def _send_duck_images(self, message: types.Message, count=1, extension=None):
         images = self._get_random_duck_images(count, extension)
         if not images:
-            self.bot.send_message(message.chat.id, f"Не удалось получить 
-            {'изображение' if count == 1 else 'изображения'}.")
+            self.bot.send_message(message.chat.id,
+                                  f"Не удалось получить {'изо-ние' if count == 1 else 'изо-ния'}.")
             return
         for img in images:
             self.bot.send_photo(message.chat.id, img)
