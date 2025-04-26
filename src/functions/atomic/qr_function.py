@@ -55,7 +55,7 @@ class QRBotFunction(AtomicBotFunctionABC):
                         f".{qrtype}" +
                         f"?url={parts[1]}")
             case 3:
-                if parts[2] is int:
+                if parts[2].isdigit():
                     req = ("https://qrtag.net/api/qr" +
                             f"_{parts[2]}.{qrtype}" +
                             f"?url={parts[1]}")
