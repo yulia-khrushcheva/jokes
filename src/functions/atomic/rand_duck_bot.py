@@ -1,3 +1,8 @@
+"""
+Модуль для реализации функции бота для получения случайных картинок уток.
+Использует API RandomDuck.
+"""
+
 import logging
 import requests
 import telebot
@@ -5,6 +10,10 @@ from telebot import types
 from bot_func_abc import AtomicBotFunctionABC
 
 class AtomicRandomDuckBotFunction(AtomicBotFunctionABC):
+"""
+Модуль для создания одной или нескольких картинок уток.
+Также изображение с указанным расширением (gif, jpg ....).
+"""
 
     commands = ["randomduck", "multiduck", "ducktype"]
     authors = ["GrandGeraldio"]
@@ -47,7 +56,8 @@ class AtomicRandomDuckBotFunction(AtomicBotFunctionABC):
     def _send_duck_images(self, message: types.Message, count=1, extension=None):
         images = self._get_random_duck_images(count, extension)
         if not images:
-            self.bot.send_message(message.chat.id, f"Не удалось получить {'изображение' if count == 1 else 'изображения'}.")
+            self.bot.send_message(message.chat.id, f"Не удалось получить 
+            {'изображение' if count == 1 else 'изображения'}.")
             return
         for img in images:
             self.bot.send_photo(message.chat.id, img)
