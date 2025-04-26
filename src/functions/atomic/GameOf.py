@@ -1,0 +1,155 @@
+import os
+import logging
+from typing import List
+import telebot
+from telebot import types
+from bot_func_abc import AtomicBotFunctionABC
+import requests
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()  # Вывод в терминал
+    ]
+)
+logger = logging.getLogger(__name__)
+
+class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
+    """Function to get Game of Thrones quotes from API by command"""
+
+    commands: List[str] = ["got", "gots"]
+    authors: List[str] = ["bolse119"]
+    about: str = "Получить цитаты из Игры Престолов!"
+    description: str = """Функция позволяет получить цитаты персонажей Игры Престолов.
+    Использование:
+    /gots - показать доступных персонажей
+    /got <имя персонажа> - получить цитату
+    Пример: /got tyrion
+    Доступные персонажи: Tyrion, Jon, Daenerys, Jaime, Sansa, Petyr
+    API: https://api.gameofthronesquotes.xyz"""
+    state: bool = True
+
+    bot: telebot.TeleBot
+    # Список из 6 персонажей с их slug и именем
+    characters: List[dict] = [
+        {"name": "Tyrion Lannister", "slug": "tyrion"},
+        {"name": "Jon Snow", "slug": "jon"},
+        {"name": "Daenerys Targaryen", "slug": "daenerys"},
+        {"name": "Jaime Lannister", "slug": "jaime"},
+        {"name": "Sansa Stark", "slug": "sansa"},
+        {"name": "Petyr Baelish", "slug": "petyr"}
+    ]
+
+    def set_handlers(self, bot: telebot.TeleBot):
+        """Set message handlers"""
+        logger.info("Инициализация обработчиков для команд %s", self.commands)
+        self.bot = bot
+
+        @bot.message_handler(commands=self.commands)
+        def got_message_handler(message: types.Message):
+            logger.info("Получена команда %s от пользователя %s в чате %s",
+                       message.text, message.from_user.id, message.chat.id)
+            
+            command = message.text.split()[0].lower()
+            
+            if command == "/gots":
+                logger.info("Запрос списка персонажей")
+                characters_list = ", ".join(char["name"] for char in self.characters)
+                bot.reply_to(
+                    message,
+                    f"Доступные персонажи: {characters_list}\n"
+                    "Используйте: /got <имя персонажа>"
+                )
+                logger.info("Список персонажей отправлен в чат %s", message.chat.id)
+                return
+
+            # Обработка /got
+            command_args = message.text.split(maxsplit=1)
+            if len(command_args) < 2:
+                logger.warning("Не указано имя персонажа для команды %s", message.text)
+                bot.reply_to(
+                    message,
+                    "Укажите персонажа! Пример: /got tyrion\n"
+                    f"Доступные персонажи: {', '.join(char['name'] for char in self.characters)}"
+                )
+                logger.info("Отправлено сообщение об ошибке в чат %s", message.chat.id)
+                return
+
+            character_input = command_args[1].lower().strip()
+            logger.info("Пользователь запросил цитату для персонажа: %s", character_input)
+
+            # Ищем персонажа в списке
+            character = next(
+                (char for char in self.characters
+                 if char["name"].lower().startswith(character_input) or
+                    char["slug"].lower() == character_input),
+                None
+            )
+
+            if not character:
+                logger.warning("Персонаж %s не найден", character_input)
+                bot.reply_to(
+                    message,
+                    f"Персонаж '{character_input}' не найден!\n"
+                    f"Доступные персонажи: {', '.join(char['name'] for char in self.characters)}"
+                )
+                logger.info("Отправлено сообщение об ошибке в чат %s", message.chat.id)
+                return
+
+            logger.info("Найден персонаж: %s (slug: %s)", character["name"], character["slug"])
+            
+            # Получаем цитату
+            quote = self.__get_got_quote(character["slug"])
+            
+            if quote:
+                logger.info("Цитата успешно получена для %s: %s",
+                           character["slug"], quote["sentence"])
+                bot.reply_to(
+                    message,
+                    f"📜 {quote['sentence']}\n— {quote['character']['name']}"
+                )
+                logger.info("Цитата отправлена в чат %s", message.chat.id)
+            else:
+                logger.warning("Не удалось получить цитату для персонажа %s", character["slug"])
+                bot.reply_to(
+                    message,
+                    f"😔 Не удалось получить цитату для {character['name']}. Попробуйте еще раз."
+                )
+                logger.info("Отправлено сообщение об ошибке в чат %s", message.chat.id)
+
+    def __get_got_quote(self, slug: str) -> dict:
+        """Get random quote for specific character"""
+        logger.info("Запрос цитаты для персонажа с slug: %s", slug)
+        try:
+            response = requests.get(
+                f"https://api.gameofthronesquotes.xyz/v1/author/{slug}/1",
+                timeout=5
+            )
+            logger.info("Получен ответ от API для %s, статус: %d", slug, response.status_code)
+            logger.debug("Полный ответ API: %s", response.text)
+            response.raise_for_status()
+
+            data = response.json()
+            if isinstance(data, dict) and "sentence" in data and "character" in data:
+                logger.info("Цитата найдена для %s: %s", slug, data["sentence"])
+                return data
+            else:
+                logger.warning("Некорректный или пустой ответ от API для персонажа %s: %s", slug, data)
+                return None
+        except requests.HTTPError as http_err:
+            logger.error("HTTP ошибка для %s: %s", slug, http_err)
+            return None
+        except requests.ConnectionError as conn_err:
+            logger.error("Ошибка соединения для %s: %s", slug, conn_err)
+            return None
+        except requests.Timeout as timeout_err:
+            logger.error("Таймаут запроса для %s: %s", slug, timeout_err)
+            return None
+        except requests.RequestException as req_err:
+            logger.error("Общая ошибка запроса для %s: %s", slug, req_err)
+            return None
+        except ValueError as json_err:
+            logger.error("Ошибка парсинга JSON для %s: %s", slug, json_err)
+            return None
