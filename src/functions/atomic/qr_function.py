@@ -1,7 +1,9 @@
 """Module for creating qr codes"""
 
 from typing import List
+from io import BytesIO
 import telebot
+import requests
 from telebot import types
 from bot_func_abc import AtomicBotFunctionABC
 
@@ -67,4 +69,8 @@ class QRBotFunction(AtomicBotFunctionABC):
             if qrtype == "png":
                 self.bot.send_photo(chat_id=message.chat.id,photo=req)
             else:
-                self.bot.send_message(chat_id=message.chat.id,text=req)
+                response = requests.get(url=req, timeout=20)
+                if response.status_code == 200:
+                    svg_bytes = BytesIO(response.text.encode('utf-8'))
+                    svg_bytes.name = 'output.svg'
+                    self.bot.send_document(chat_id=message.chat.id,document=svg_bytes)
