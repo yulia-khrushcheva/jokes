@@ -142,9 +142,10 @@ class StartApp():
             button_data = F"{self.button_data} {next_index}"
             description_callback_data = self.keyboard_factory.new(app_key_button=button_data)
             reply_markup=self.__gen_markup_button("Next ->", description_callback_data)
-            self.bot.send_message(text=txt, chat_id=call.message.chat.id, reply_markup=reply_markup)
+            self.bot.send_message(text=txt, chat_id=call.message.chat.id,
+            reply_markup=reply_markup, parse_mode="Markdown")
         else:
-            self.bot.send_message(text=txt, chat_id=call.message.chat.id)
+            self.bot.send_message(text=txt, chat_id=call.message.chat.id, parse_mode="Markdown")
 
     def __get_atomic_function_description(self, funct: AtomicBotFunctionABC) -> str:
         authors = "\n "
