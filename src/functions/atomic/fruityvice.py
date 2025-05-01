@@ -8,7 +8,7 @@ from telebot.callback_data import CallbackData
 from bot_func_abc import AtomicBotFunctionABC
 
 class AtomicFruitBotFunction(AtomicBotFunctionABC):
-    """Реализация функции бота для работы с данными о фруктах"""
+    """Реализация функции бота для работы с вывода списка фруктов и проверки состава фрукта по выбору пользователя"""
 
     commands: List[str] = ["fruitbot"]
     authors: List[str] = ["Twinteko"]
