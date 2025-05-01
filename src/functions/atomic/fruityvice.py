@@ -16,8 +16,9 @@ class AtomicFruitBotFunction(AtomicBotFunctionABC):
     about: str = "Работа с базой данных фруктов"
     description: str = (
         "Доступные команды:\n"
-        "/fruitbot - интерактивное меню\n"
-        "Источник данных: Fruityvice API"
+        "/fruitbot - интерактивное меню для работы с фруктами.\n"
+        "Позволяет получить список фруктов и подробную информацию о каждом.\n"
+        "Источник данных: Fruityvice API, предоставляющий актуальную информацию о составе фруктов."
     )
     state: bool = True
 
