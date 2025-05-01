@@ -10,12 +10,11 @@ from bot_func_abc import AtomicBotFunctionABC
 class AtomicFruitBotFunction(AtomicBotFunctionABC):
     """Реализация функции бота для работы с данными о фруктах"""
 
-    commands: List[str] = ["fruits", "fruitbot"]
+    commands: List[str] = ["fruitbot"]
     authors: List[str] = ["Twinteko"]
     about: str = "Работа с базой данных фруктов"
     description: str = (
         "Доступные команды:\n"
-        "/fruits - список всех фруктов\n"
         "/fruitbot - интерактивное меню\n"
         "Источник данных: Fruityvice API"
     )
@@ -58,8 +57,6 @@ class AtomicFruitBotFunction(AtomicBotFunctionABC):
                     reply_markup=force_reply
                 )
                 self.bot.register_next_step_handler(msg, self.__process_fruit_input)
-            elif action == 'cancel':
-                self.bot.answer_callback_query(call.id, "Диалог завершен")
             self.bot.answer_callback_query(call.id)
 
     def __gen_markup(self):
@@ -67,12 +64,10 @@ class AtomicFruitBotFunction(AtomicBotFunctionABC):
         markup.row_width = 2
         list_data = self.fruit_keyboard_factory.new(fruit_action="list")
         info_data = self.fruit_keyboard_factory.new(fruit_action="info")
-        cancel_data = self.fruit_keyboard_factory.new(fruit_action="cancel")
 
         markup.add(
             types.InlineKeyboardButton("🍎 Список", callback_data=list_data),
-            types.InlineKeyboardButton("📊 Информация", callback_data=info_data),
-            types.InlineKeyboardButton("❌ Отмена", callback_data=cancel_data)
+            types.InlineKeyboardButton("📊 Информация", callback_data=info_data)
         )
         return markup
 
@@ -82,8 +77,8 @@ class AtomicFruitBotFunction(AtomicBotFunctionABC):
             response = requests.get(f"{self.api_url}/all", timeout=10)
             response.raise_for_status()
             fruits = response.json()
-            fruit_list = "\n".join([f"• {fruit['name']}" for fruit in fruits[:25]])
-            return f"🍍 Доступные фрукты:\n{fruit_list}\n\n(показано 25 из {len(fruits)})"
+            fruit_list = "\n".join([f"• {fruit['name']}" for fruit in fruits])
+            return f"🍍 Доступные фрукты:\n{fruit_list}\n\n(показано {len(fruits)})"
         except requests.exceptions.RequestException as e:
             logging.error("Fruit API error: %s", str(e))
             return "⚠️ Ошибка при получении списка фруктов"
