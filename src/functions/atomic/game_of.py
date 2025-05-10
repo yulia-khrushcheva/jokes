@@ -1,8 +1,8 @@
 """Module implementation of the atomic function for Telegram Bot."""
 
 import logging
-import requests
 from typing import List
+import requests
 import telebot
 from telebot import types
 from telebot.callback_data import CallbackData
@@ -76,7 +76,8 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
             if len(command_args) < 2:
                 self.bot.send_message(
                     message.chat.id,
-                    "⛔ Укажите персонажа!\nПример: `/got tyrion`",
+                    "⛔ Укажите персонажа!\n"
+                    "Пример: `/got tyrion`",
                     reply_markup=self.__gen_markup()
                 )
                 return
@@ -103,12 +104,14 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
             if quote:
                 self.bot.send_message(
                     message.chat.id,
-                    f"📜 \"{quote['sentence']}\"\n— {quote['character']['name']}"
+                    f"📜 \"{quote['sentence']}\"\n"
+                    f"— {quote['character']['name']}"
                 )
             else:
                 self.bot.send_message(
                     message.chat.id,
-                    f"😔 Не удалось получить цитату для {character['name']}. Попробуйте еще раз.",
+                    f"😔 Не удалось получить цитату для {character['name']}.\n"
+                    "Попробуйте еще раз.",
                     reply_markup=self.__gen_markup()
                 )
 
@@ -131,7 +134,13 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
         markup = types.InlineKeyboardMarkup()
         markup.row_width = 2
         markup.add(
-            types.InlineKeyboardButton("🔄 Случайная цитата", callback_data=self.keyboard_factory.new(action="random_quote")),
-            types.InlineKeyboardButton("📜 Список персонажей", callback_data=self.keyboard_factory.new(action="list_characters"))
+            types.InlineKeyboardButton(
+                "🔄 Случайная цитата",
+                callback_data=self.keyboard_factory.new(action="random_quote")
+            ),
+            types.InlineKeyboardButton(
+                "📜 Список персонажей",
+                callback_data=self.keyboard_factory.new(action="list_characters")
+            )
         )
         return markup
