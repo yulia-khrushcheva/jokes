@@ -27,19 +27,25 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
     /gots - показать доступных персонажей
     /got <имя персонажа> - получить цитату
     Пример: /got tyrion
-    Доступные персонажи: Tyrion, Jon, Daenerys, Jaime, Sansa, Petyr
+    Доступные персонажи: Tyrion, Jon, Daenerys, Jaime, Sansa, Petyr, Cersei, Arya, Eddard, Theon, Samwell, Varys
     API: https://api.gameofthronesquotes.xyz"""
     state: bool = True
 
     bot: telebot.TeleBot
-    # Список из 6 персонажей с их slug и именем
+    # Расширенный список персонажей с их slug
     characters: List[dict] = [
         {"name": "Tyrion Lannister", "slug": "tyrion"},
         {"name": "Jon Snow", "slug": "jon"},
         {"name": "Daenerys Targaryen", "slug": "daenerys"},
         {"name": "Jaime Lannister", "slug": "jaime"},
         {"name": "Sansa Stark", "slug": "sansa"},
-        {"name": "Petyr Baelish", "slug": "petyr"}
+        {"name": "Petyr Baelish", "slug": "petyr"},
+        {"name": "Cersei Lannister", "slug": "cersei"},
+        {"name": "Arya Stark", "slug": "arya"},
+        {"name": "Eddard Stark", "slug": "eddard"},
+        {"name": "Theon Greyjoy", "slug": "theon"},
+        {"name": "Samwell Tarly", "slug": "samwell"},
+        {"name": "Varys", "slug": "varys"}
     ]
 
     def set_handlers(self, bot: telebot.TeleBot):
@@ -123,8 +129,9 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
         """Get random quote for specific character"""
         logger.info("Запрос цитаты для персонажа с slug: %s", slug)
         try:
+            # Запрашиваем до 2 цитат, чтобы учесть структуру из скриншота
             response = requests.get(
-                f"https://api.gameofthronesquotes.xyz/v1/author/{slug}/1",
+                f"https://api.gameofthronesquotes.xyz/v1/author/{slug}/2",
                 timeout=5
             )
             logger.info("Получен ответ от API для %s, статус: %d", slug, response.status_code)
@@ -132,9 +139,15 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
             response.raise_for_status()
 
             data = response.json()
-            if isinstance(data, dict) and "sentence" in data and "character" in data:
-                logger.info("Цитата найдена для %s: %s", slug, data["sentence"])
-                return data
+            # Ожидаем список цитат, берём первую, если есть
+            if isinstance(data, list) and len(data) > 0:
+                quote = data[0]
+                if "sentence" in quote and "character" in quote:
+                    logger.info("Цитата найдена для %s: %s", slug, quote["sentence"])
+                    return quote
+                else:
+                    logger.warning("Цитата не содержит ожидаемых полей: %s", quote)
+                    return None
             else:
                 logger.warning("Некорректный или пустой ответ от API для персонажа %s: %s", slug, data)
                 return None
