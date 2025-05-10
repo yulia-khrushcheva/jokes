@@ -5,7 +5,6 @@ from typing import List
 import requests
 import telebot
 from telebot import types
-from telebot.callback_data import CallbackData
 from bot_func_abc import AtomicBotFunctionABC
 
 # Настройка логирования
@@ -25,15 +24,13 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
     description: str = (
         "Функция позволяет получить цитаты персонажей Игры Престолов.\n"
         "Использование:\n"
-        "/gots - показать доступных персонажей\n"
-        "/got <имя персонажа> - получить цитату\n"
+        "/got - сначала покажет список персонажей, затем укажите имя\n"
         "Пример: /got tyrion\n"
         "API: https://api.gameofthronesquotes.xyz"
     )
     state: bool = True
 
     bot: telebot.TeleBot
-    keyboard_factory: CallbackData
 
     characters: List[dict] = [
         {"name": "Tyrion Lannister", "slug": "tyrion"},
@@ -54,39 +51,20 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
         """Set message handlers"""
         logger.info("Инициализация обработчиков команд: %s", self.commands)
         self.bot = bot
-        self.keyboard_factory = CallbackData('action', prefix=self.commands[0])
 
         @self.bot.message_handler(commands=self.commands)
         def got_message_handler(message: types.Message):
             logger.info("Получена команда %s", message.text)
 
-            command = message.text.split()[0].lower()
-
-            if command == "/gots":
-                characters_list = ", ".join(char["name"] for char in self.characters)
-                self.bot.send_message(
-                    message.chat.id,
-                    f"📜 Доступные персонажи: {characters_list}\n"
-                    "Используйте команду `/got <имя персонажа>`",
-                    reply_markup=self.__gen_markup()
-                )
-                return
-
             command_args = message.text.split(maxsplit=1)
             if len(command_args) < 2:
-                self.bot.send_message(
-                    message.chat.id,
-                    "⛔ Укажите персонажа!\n"
-                    "Пример: `/got tyrion`",
-                    reply_markup=self.__gen_markup()
-                )
-                return
+                self.__show_character_list(message.chat.id)
+                return  # Если не указан персонаж, показываем список
 
             character_input = command_args[1].lower().strip()
             character = next(
                 (char for char in self.characters
-                 if char["name"].lower().startswith(character_input) or
-                    char["slug"].lower() == character_input),
+                 if char["slug"].lower() == character_input),
                 None
             )
 
@@ -94,9 +72,9 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
                 self.bot.send_message(
                     message.chat.id,
                     f"❌ Персонаж `{character_input}` не найден!\n"
-                    f"Доступные персонажи: {', '.join(char['name'] for char in self.characters)}",
-                    reply_markup=self.__gen_markup()
+                    f"Попробуйте еще раз, выбрав **slug** из списка ниже."
                 )
+                self.__show_character_list(message.chat.id)  # Показываем список после ошибки
                 return
 
             quote = self.__get_got_quote(character["slug"])
@@ -104,16 +82,25 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
             if quote:
                 self.bot.send_message(
                     message.chat.id,
-                    f"📜 \"{quote['sentence']}\"\n"
-                    f"— {quote['character']['name']}"
+                    f"📜 \"{quote['sentence']}\"\n— {quote['character']['name']}"
                 )
             else:
                 self.bot.send_message(
                     message.chat.id,
-                    f"😔 Не удалось получить цитату для {character['name']}.\n"
-                    "Попробуйте еще раз.",
-                    reply_markup=self.__gen_markup()
+                    f"😔 Не удалось получить цитату для {character['name']}.\nПопробуйте еще раз."
                 )
+
+            self.__show_character_list(message.chat.id)  # Показываем список после цитаты
+
+    def __show_character_list(self, chat_id: int):
+        """Отправляет список доступных персонажей в колонку"""
+        characters_list = "\n".join(f"- {char['name']} (`{char['slug']}`)" for char in self.characters)
+        self.bot.send_message(
+            chat_id,
+            f"📜 **Доступные персонажи:**\n{characters_list}\n"
+            "Введите имя персонажа после команды `/got`, например: `/got tyrion`\n"
+            "*Используйте **slug** (указан в `...`) для корректного запроса!*"
+        )
 
     @staticmethod
     def __get_got_quote(slug: str) -> dict:
@@ -128,19 +115,3 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
             return data[0] if isinstance(data, list) and len(data) > 0 else None
         except requests.RequestException:
             return None
-
-    def __gen_markup(self):
-        """Generate inline keyboard markup"""
-        markup = types.InlineKeyboardMarkup()
-        markup.row_width = 2
-        markup.add(
-            types.InlineKeyboardButton(
-                "🔄 Случайная цитата",
-                callback_data=self.keyboard_factory.new(action="random_quote")
-            ),
-            types.InlineKeyboardButton(
-                "📜 Список персонажей",
-                callback_data=self.keyboard_factory.new(action="list_characters")
-            )
-        )
-        return markup
