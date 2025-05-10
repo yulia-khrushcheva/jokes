@@ -88,11 +88,14 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
 
     def __show_character_list(self, chat_id: int):
         """Отправляет список доступных персонажей в колонку"""
-        characters_list = "\n".join(f"- {char['name']} (`{char['slug']}`)" for char in self.characters)
+        characters_list = "\n".join(
+            f"- {char['name']} (`{char['slug']}`)" for char in self.characters
+        )
         self.bot.send_message(
             chat_id,
             f"📜 **Доступные персонажи:**\n{characters_list}\n"
-            "Введите имя персонажа после команды `/got`, например: `/got tyrion`\n", parse_mode="Markdown"
+            "Введите имя персонажа после команды `/got`, например: `/got tyrion`\n", 
+            parse_mode="Markdown"
         )
 
     @staticmethod
