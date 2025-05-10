@@ -7,12 +7,6 @@ import telebot
 from telebot import types
 from bot_func_abc import AtomicBotFunctionABC
 
-# Настройка логирования
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()]
-)
 logger = logging.getLogger(__name__)
 
 class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
@@ -82,30 +76,23 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
             if quote:
                 self.bot.send_message(
                     message.chat.id,
-                    f"📜 \"{quote['sentence']}\"\n"
-                    f"— {quote['character']['name']}"
+                    f"📜 \"{quote['sentence']}\"\n— {quote['character']['name']}"
                 )
             else:
                 self.bot.send_message(
                     message.chat.id,
-                    f"😔 Не удалось получить цитату для {character['name']}.\n"
-                    "Попробуйте еще раз."
+                    f"😔 Не удалось получить цитату для {character['name']}.\nПопробуйте еще раз."
                 )
 
             self.__show_character_list(message.chat.id)  # Показываем список после цитаты
 
     def __show_character_list(self, chat_id: int):
         """Отправляет список доступных персонажей в колонку"""
-        characters_list = "\n".join(
-            f"- {char['name']} (`{char['slug']}`)"
-            for char in self.characters
-        )
-
+        characters_list = "\n".join(f"- {char['name']} (`{char['slug']}`)" for char in self.characters)
         self.bot.send_message(
             chat_id,
             f"📜 **Доступные персонажи:**\n{characters_list}\n"
-            "Введите имя персонажа после команды `/got`, например: `/got tyrion`\n"
-            "*Используйте **slug** (указан в `...`) для корректного запроса!*"
+            "Введите имя персонажа после команды `/got`, например: `/got tyrion`\n" parse_mode="Markdown"
         )
 
     @staticmethod
