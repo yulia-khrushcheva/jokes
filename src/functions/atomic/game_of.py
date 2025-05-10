@@ -11,7 +11,7 @@ from bot_func_abc import AtomicBotFunctionABC
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]  # Вывод в терминал
+    handlers=[logging.StreamHandler()]
 )
 logger = logging.getLogger(__name__)
 
@@ -27,8 +27,6 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
         "/gots - показать доступных персонажей\n"
         "/got <имя персонажа> - получить цитату\n"
         "Пример: /got tyrion\n"
-        "Доступные персонажи: Tyrion, Jon, Daenerys, Jaime, Sansa, Petyr, "
-        "Cersei, Arya, Eddard, Theon, Samwell, Varys\n"
         "API: https://api.gameofthronesquotes.xyz"
     )
     state: bool = True
