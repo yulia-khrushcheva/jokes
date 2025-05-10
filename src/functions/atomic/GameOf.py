@@ -1,18 +1,17 @@
-import os
+"""Module for Game of Thrones Quotes Bot Function."""
+
 import logging
+import requests
 from typing import List
 import telebot
 from telebot import types
 from bot_func_abc import AtomicBotFunctionABC
-import requests
 
 # Настройка логирования
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler()  # Вывод в терминал
-    ]
+    handlers=[logging.StreamHandler()]  # Вывод в терминал
 )
 logger = logging.getLogger(__name__)
 
@@ -22,13 +21,16 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
     commands: List[str] = ["got", "gots"]
     authors: List[str] = ["bolse119"]
     about: str = "Получить цитаты из Игры Престолов!"
-    description: str = """Функция позволяет получить цитаты персонажей Игры Престолов.
-    Использование:
-    /gots - показать доступных персонажей
-    /got <имя персонажа> - получить цитату
-    Пример: /got tyrion
-    Доступные персонажи: Tyrion, Jon, Daenerys, Jaime, Sansa, Petyr, Cersei, Arya, Eddard, Theon, Samwell, Varys
-    API: https://api.gameofthronesquotes.xyz"""
+    description: str = (
+        "Функция позволяет получить цитаты персонажей Игры Престолов.\n"
+        "Использование:\n"
+        "/gots - показать доступных персонажей\n"
+        "/got <имя персонажа> - получить цитату\n"
+        "Пример: /got tyrion\n"
+        "Доступные персонажи: Tyrion, Jon, Daenerys, Jaime, Sansa, Petyr, "
+        "Cersei, Arya, Eddard, Theon, Samwell, Varys\n"
+        "API: https://api.gameofthronesquotes.xyz"
+    )
     state: bool = True
 
     bot: telebot.TeleBot
@@ -57,9 +59,9 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
         def got_message_handler(message: types.Message):
             logger.info("Получена команда %s от пользователя %s в чате %s",
                        message.text, message.from_user.id, message.chat.id)
-            
+
             command = message.text.split()[0].lower()
-            
+
             if command == "/gots":
                 logger.info("Запрос списка персонажей")
                 characters_list = ", ".join(char["name"] for char in self.characters)
@@ -105,10 +107,10 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
                 return
 
             logger.info("Найден персонаж: %s (slug: %s)", character["name"], character["slug"])
-            
+
             # Получаем цитату
             quote = self.__get_got_quote(character["slug"])
-            
+
             if quote:
                 logger.info("Цитата успешно получена для %s: %s",
                            character["slug"], quote["sentence"])
@@ -129,7 +131,7 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
         """Get random quote for specific character"""
         logger.info("Запрос цитаты для персонажа с slug: %s", slug)
         try:
-            # Запрашиваем до 2 цитат, чтобы учесть структуру из скриншота
+            # Запрашиваем до 2 цитат
             response = requests.get(
                 f"https://api.gameofthronesquotes.xyz/v1/author/{slug}/2",
                 timeout=5
@@ -139,29 +141,17 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
             response.raise_for_status()
 
             data = response.json()
-            # Ожидаем список цитат, берём первую, если есть
             if isinstance(data, list) and len(data) > 0:
                 quote = data[0]
                 if "sentence" in quote and "character" in quote:
                     logger.info("Цитата найдена для %s: %s", slug, quote["sentence"])
                     return quote
-                else:
-                    logger.warning("Цитата не содержит ожидаемых полей: %s", quote)
-                    return None
-            else:
-                logger.warning("Некорректный или пустой ответ от API для персонажа %s: %s", slug, data)
+                logger.warning("Цитата не содержит ожидаемых полей: %s", quote)
                 return None
-        except requests.HTTPError as http_err:
-            logger.error("HTTP ошибка для %s: %s", slug, http_err)
+            logger.warning("Некорректный или пустой ответ от API для персонажа %s: %s", slug, data)
             return None
-        except requests.ConnectionError as conn_err:
-            logger.error("Ошибка соединения для %s: %s", slug, conn_err)
-            return None
-        except requests.Timeout as timeout_err:
-            logger.error("Таймаут запроса для %s: %s", slug, timeout_err)
-            return None
-        except requests.RequestException as req_err:
-            logger.error("Общая ошибка запроса для %s: %s", slug, req_err)
+        except requests.RequestException as ex:
+            logger.error("Ошибка при запросе цитаты для %s: %s", slug, ex)
             return None
         except ValueError as json_err:
             logger.error("Ошибка парсинга JSON для %s: %s", slug, json_err)
