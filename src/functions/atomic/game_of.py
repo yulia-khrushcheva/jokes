@@ -20,7 +20,7 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
 
     commands: List[str] = ["got", "gots"]
     authors: List[str] = ["bolse119"]
-    about: str = "Получить цитаты из Игры Престолов!"
+    about: str = "Цитаты из Игры Престолов!"
     description: str = (
         "Функция позволяет получить цитаты персонажей Игры Престолов.\n"
         "Использование:\n"
