@@ -1,8 +1,8 @@
 """Module for Game of Thrones Quotes Bot Function."""
 
 import logging
-import requests
 from typing import List
+import requests
 import telebot
 from telebot import types
 from bot_func_abc import AtomicBotFunctionABC
