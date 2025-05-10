@@ -92,7 +92,7 @@ class GameOfThronesQuotesBotFunction(AtomicBotFunctionABC):
         self.bot.send_message(
             chat_id,
             f"📜 **Доступные персонажи:**\n{characters_list}\n"
-            "Введите имя персонажа после команды `/got`, например: `/got tyrion`\n" parse_mode="Markdown"
+            "Введите имя персонажа после команды `/got`, например: `/got tyrion`\n"
         )
 
     @staticmethod
