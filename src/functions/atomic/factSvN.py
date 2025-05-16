@@ -1,25 +1,22 @@
-from bot_func_abc import AtomicBotFunctionABC
+from typing import List
 import requests
+from telebot.types import Message
+from bot_func_abc import AtomicBotFunctionABC
 
 class FactSvNFunction(AtomicBotFunctionABC):
-    commands = ["factSvN"]
+    commands = ["factsvn"]
     authors = ["Kylon2308"]
     about = "Вывод случайного факта"
-    description = "Команда /factSvN показывает случайный факт с внешнего API"
-
-    def __init__(self):
-        self.state = True  # Чтобы функция считалась активной
+    description = "Команда /factsvn показывает случайный факт с внешнего API"
+    state = True
 
     def set_handlers(self, bot):
         @bot.message_handler(commands=self.commands)
-        def handle_fact(message):
-            API_URL = "https://uselessfacts.jsph.pl/api/v2/facts/random?language=en"
+        def handle_fact(message: Message):
             try:
-                response = requests.get(API_URL, timeout=5)
+                response = requests.get("https://uselessfacts.jsph.pl/api/v2/facts/random?language=en", timeout=5)
                 response.raise_for_status()
-                data = response.json()
-                text = data.get("text", "Не удалось получить факт.")
+                fact = response.json().get("text", "Не удалось получить факт.")
             except Exception as e:
-                text = f"Ошибка при получении факта: {e}"
-
-            bot.send_message(chat_id=message.chat.id, text=f"💡 Did you know?\n\n{text}")
+                fact = f"Ошибка: {e}"
+            bot.send_message(message.chat.id, f"💡 Did you know?\n\n{fact}")
