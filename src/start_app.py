@@ -26,10 +26,6 @@ class StartApp():
     self.logger = self.get_logger()
     self.bot = self.__get_bot()
 
-    # Подключаем функцию factSvN
-    self.fact_svn_function = FactSvNFunction(self.bot)
-    self.fact_svn_function.register_handlers()
-
     self.atom_functions_list = load_atomic_functions()
     self.__decorate_atomic_functions()
     self.__decorate_defoult_functions(start_comannds, self.atom_functions_list)
