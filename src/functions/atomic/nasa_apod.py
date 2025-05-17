@@ -18,8 +18,7 @@ class AtomicNasaApodFunction(AtomicBotFunctionABC):
     about: str = "Астрономическое фото дня и снимки Земли от NASA"
     description: str = """NASA сервисы:
     1. APOD: /nasa - фото дня
-    2. Earth: /earth <lat>,<lon> - снимок
-       Пример: /earth 37.7749,-122.4194
+    2. Earth: /earth 37.7749,-122.4194 - снимок
     """
     state: bool = True
 
