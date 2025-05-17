@@ -15,7 +15,7 @@ class AtomicNasaApodFunction(AtomicBotFunctionABC):
 
     commands: List[str] = ["nasa", "earth"]
     authors: List[str] = ["mitochka"]
-    about: str = "Астрономическое фото дня и снимки Земли от NASA"
+    about: str = "Астрономическое снимки от NASA"
     description: str = """NASA сервисы:
     1. APOD: /nasa - фото дня
     2. Earth: /earth 37.7749,-122.4194 - снимок Земли
