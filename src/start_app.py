@@ -12,7 +12,6 @@ from bot_callback_filter import BotCallbackCustomFilter
 from bot_func_abc import AtomicBotFunctionABC
 from functions.defoult_bot_function import DefoultBotFunction
 
-
 class StartApp():
     """Configuring and running the application"""
 
@@ -25,13 +24,11 @@ class StartApp():
     def __init__(self, start_comannds: List[str]):
         self.logger = self.get_logger()
         self.bot = self.__get_bot()
-
         self.atom_functions_list = load_atomic_functions()
         self.__decorate_atomic_functions()
         self.__decorate_defoult_functions(start_comannds, self.atom_functions_list)
         self.__add_middleware()
         self.__add_filter()
-
 
     def start_polling(self):
         """Start receiving messages"""
