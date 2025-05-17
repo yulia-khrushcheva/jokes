@@ -34,7 +34,7 @@ class AtomicNasaApodFunction(AtomicBotFunctionABC):
         self.bot = bot
         self.logger.info("Регистрация обработчиков команд NASA API")
 
-        @bot.message_handler(commands=[self.commands[1]])
+        @bot.message_handler(commands=[self.commands[0]])
         def nasa_message_handler(message: types.Message):
             try:
                 command_parts = message.text.split()
@@ -53,7 +53,7 @@ class AtomicNasaApodFunction(AtomicBotFunctionABC):
             except (TypeError, AttributeError, RuntimeError) as ex:
                 logging.critical("Неожиданная ошибка: %s", ex)
                 bot.reply_to(message, "Произошла ошибка. Координаты стран СНГ не поддерживаются.")
-        @bot.message_handler(commands=[self.commands[0]])
+        @bot.message_handler(commands=[self.commands[1]])
         def earth_message_handler(message: types.Message):
             try:
                 command_parts = message.text.split()
