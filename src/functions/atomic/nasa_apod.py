@@ -16,14 +16,14 @@ class AtomicNasaApodFunction(AtomicBotFunctionABC):
     commands: List[str] = ["nasa", "earth"]
     authors: List[str] = ["mitochka"]
     about: str = "Астрономическое фото дня и снимки Земли от NASA"
-    description: str = """Функция предоставляет доступ к сервисам NASA:
-    1. Astronomy Picture of the Day (APOD):
-       /nasa - показать фото дня из космоса
-       /nasa random - показать случайное фото из архива
+    description: str = """NASA сервисы:
+    1. APOD:
+       /nasa - фото дня
+       /nasa random - случайное фото
     
-    2. Earth Imagery:
-       /earth <lat>,<lon> - показать спутниковый снимок указанных координат
-       Пример: /earth 37.7749,-122.4194 (Сан-Франциско)
+    2. Earth:
+       /earth <lat>,<lon> - снимок
+       Пример: /earth 37.7749,-122.4194
     """
     state: bool = True
 
