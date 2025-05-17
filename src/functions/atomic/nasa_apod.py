@@ -11,7 +11,7 @@ from bot_func_abc import AtomicBotFunctionABC
 
 
 class AtomicNasaApodFunction(AtomicBotFunctionABC):
-    """Implementation of atomic function for NASA Astronomy Picture of the Day and Earth imagery"""
+    """Implementation of atomic function for NASA Astronomy Picture o the Day and Earth imagery"""
 
     commands: List[str] = ["nasa", "earth"]
     authors: List[str] = ["mitochka"]
