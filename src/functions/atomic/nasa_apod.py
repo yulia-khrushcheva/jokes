@@ -272,7 +272,7 @@ class AtomicNasaApodFunction(AtomicBotFunctionABC):
                     )
             else:
                 # For other media types, send as text
-                full_caption = caption + f"\n\n[🔗 Открыть ресурс]({data['url']})"
+                full_caption = caption #+ f"\n\n[🔗 Открыть ресурс]({data['url']})"
                 self.bot.send_message(
                     chat_id,
                     full_caption,
